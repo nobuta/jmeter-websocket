@@ -30,6 +30,7 @@ public class WebSocketSamplerGui extends AbstractSamplerGui {
     private JTextField domain;
     private JTextField port;
     private JTextField protocol;
+    private JTextField subProtocol;
     private JTextField contentEncoding;
     private JTextField path;
     private JTextArea  sendMessage;
@@ -70,6 +71,7 @@ public class WebSocketSamplerGui extends AbstractSamplerGui {
         domain.setText(element.getPropertyAsString(WebSocketSampler.DOMAIN));
         port.setText(element.getPropertyAsString(WebSocketSampler.PORT));
         protocol.setText(element.getPropertyAsString(WebSocketSampler.PROTOCOL));
+        subProtocol.setText(element.getPropertyAsString(WebSocketSampler.SUB_PROTOCOL));
         path.setText(element.getPropertyAsString(WebSocketSampler.PATH));
         contentEncoding.setText(element.getPropertyAsString(WebSocketSampler.CONTENT_ENCODING));
 
@@ -99,6 +101,7 @@ public class WebSocketSamplerGui extends AbstractSamplerGui {
         element.setProperty(WebSocketSampler.PATH, path.getText());
         element.setProperty(WebSocketSampler.PORT, port.getText());
         element.setProperty(WebSocketSampler.PROTOCOL, protocol.getText());
+        element.setProperty(WebSocketSampler.SUB_PROTOCOL, subProtocol.getText());
         element.setProperty(WebSocketSampler.CONTENT_ENCODING, contentEncoding.getText());
 
         Arguments args = (Arguments) argsPanel.createTestElement();
@@ -145,6 +148,10 @@ public class WebSocketSamplerGui extends AbstractSamplerGui {
         JLabel protocolLabel = new JLabel(JMeterUtils.getResString("protocol")); // $NON-NLS-1$
         protocolLabel.setLabelFor(protocol);
 
+        subProtocol = new JTextField(15);
+        JLabel subProtocolLabel = new JLabel(getResString("websocket_subprotocol")); // $NON-NLS-1$
+        subProtocolLabel.setLabelFor(subProtocol);
+        
         // CONTENT_ENCODING
         contentEncoding = new JTextField(10);
         JLabel contentEncodingLabel = new JLabel(JMeterUtils.getResString("content_encoding")); // $NON-NLS-1$
@@ -159,6 +166,10 @@ public class WebSocketSamplerGui extends AbstractSamplerGui {
         panel.add(protocol);
         panel.add(Box.createHorizontalStrut(5));
 
+        panel.add(subProtocolLabel);
+        panel.add(subProtocol);
+        panel.add(Box.createHorizontalStrut(5));
+        
         panel.add(contentEncodingLabel);
         panel.add(contentEncoding);
         panel.setMinimumSize(panel.getPreferredSize());

@@ -56,7 +56,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
     private static final int UNSPECIFIED_PORT = 0;
     private static final String UNSPECIFIED_PORT_AS_STRING = "0"; // $NON-NLS-1$
     private static final int URL_UNSPECIFIED_PORT = -1;
-
+    private static final String DEFAULT_SUB_PROTOCOL = "";
 
     private WebSocket.Connection connection = null;
     private static final ConcurrentHashSet<WebSocket.Connection> samplerConnections
@@ -69,6 +69,7 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
     public static final String PORT = "WebSocketSampler.port";
     public static final String PATH = "WebSocketSampler.path";
     public static final String PROTOCOL = "WebSocketSampler.protocol";
+    public static final String SUB_PROTOCOL = "WebSocketSampler.subProtocol";
     public static final String CONTENT_ENCODING = "WebSocketSampler.contentEncoding";
     public static final String ARGUMENTS = "WebSocketSampler.arguments";
     public static final String SEND_MESSAGE = "WebSocketSampler.sendMessage";
@@ -84,7 +85,9 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
 
     public void initialize() throws Exception {
         URI uri = getUri();
+        String subProtocol = getSubProtocol();
         WebSocketClient webSocketClient = webSocketClientFactory.newWebSocketClient();
+        webSocketClient.setProtocol(subProtocol);
         final WebSocketSampler parent = this;
         final String threadName = JMeterContextService.getContext().getThread().getThreadName();
         final Pattern regex = (getRecvMessage() != null) ? Pattern.compile(getRecvMessage()) : null;
@@ -374,6 +377,14 @@ public class WebSocketSampler extends AbstractSampler implements TestStateListen
     public long getRecvTimeout() {
         return getPropertyAsLong(RECV_TIMEOUT, 20000L);
     }
+
+    public void setSubProtocol(String value) {
+        setProperty(new StringProperty(SUB_PROTOCOL, value));
+    }
+    public String getSubProtocol() {
+        return getPropertyAsString(SUB_PROTOCOL, DEFAULT_SUB_PROTOCOL);
+    }
+
 
     public void setArguments(Arguments value) {
         setProperty(new TestElementProperty(ARGUMENTS, value));
