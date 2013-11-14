@@ -6,7 +6,7 @@
 
     <groupId>net.unit8.jmeter</groupId>
     <artifactId>ApacheJmeter_websocket</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>ApacheJmeter_websocket</name>
 
     <properties>

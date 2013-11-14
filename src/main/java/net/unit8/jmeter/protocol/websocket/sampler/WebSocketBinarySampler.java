@@ -77,6 +77,7 @@ public class WebSocketBinarySampler extends AbstractSampler implements TestState
     public static final String SEND_MESSAGE = "WebSocketSampler.sendMessage";
     public static final String RECV_MESSAGE = "WebSocketSampler.recvMessage";
     public static final String RECV_TIMEOUT = "WebSocketSampler.recvTimeout";
+    public static final String RECV_WAIT = "WebSocketSampler.recvWait";
 
     private static WebSocketClientFactory webSocketClientFactory = new WebSocketClientFactory();
     
@@ -171,23 +172,29 @@ log.debug("onMessage " + threadName + ", message=  "+ new String(bytes));
             } else {
                 initialize();
             }
-            synchronized (this) {
-                wait(getRecvTimeout());
-            }
             
-            if (responseMessage == null) {
-                res.setResponseCode("204");
-                throw new TimeoutException("No content (probably timeout).");
-            }
-            
-            if (responseErrorCode != null) {
-            	log.debug("Error " + threadName +  ", code = " + responseErrorCode);
-				res.setResponseCode(responseErrorCode);
-                res.setResponseData(responseMessage, getContentEncoding());
+            if (isRecvWait()) { 
+	            
+	            synchronized (this) {
+	                wait(getRecvTimeout());
+	            }
+	            
+	            if (responseMessage == null) {
+	                res.setResponseCode("204");
+	                throw new TimeoutException("No content (probably timeout).");
+	            }
+	            
+	            if (responseErrorCode != null) {
+	            	log.debug("Error " + threadName +  ", code = " + responseErrorCode);
+					res.setResponseCode(responseErrorCode);
+	                res.setResponseData(responseMessage, getContentEncoding());
+	            } else {
+		            res.setResponseCodeOK();
+		            res.setResponseData(responseMessage, getContentEncoding());
+		            isOK = true;
+	            }
             } else {
-	            res.setResponseCodeOK();
-	            res.setResponseData(responseMessage, getContentEncoding());
-	            isOK = true;
+            	isOK = true;
             }
         } catch (Exception e) {
             log.debug(e.getMessage());
@@ -432,6 +439,15 @@ log.debug("onMessage " + threadName + ", message=  "+ new String(bytes));
         return getPropertyAsLong(RECV_TIMEOUT, 20000L);
     }
 
+    public boolean isRecvWait() {
+    	return getPropertyAsBoolean(RECV_WAIT, true);
+    }
+    
+    public void setRecvWait(boolean value) {
+    	setProperty(new BooleanProperty(RECV_WAIT, value));
+    }
+    
+    
     public void setSubProtocol(String value) {
         setProperty(new StringProperty(SUB_PROTOCOL, value));
     }
