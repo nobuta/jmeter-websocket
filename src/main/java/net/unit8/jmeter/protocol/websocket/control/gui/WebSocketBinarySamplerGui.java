@@ -2,6 +2,7 @@ package net.unit8.jmeter.protocol.websocket.control.gui;
 
 import net.unit8.jmeter.protocol.websocket.sampler.WebSocketBinarySampler;
 import net.unit8.jmeter.protocol.websocket.sampler.WebSocketSampler;
+
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.gui.util.HorizontalPanel;
 import org.apache.jmeter.gui.util.VerticalPanel;
@@ -15,6 +16,9 @@ import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import java.awt.*;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -191,6 +195,14 @@ public class WebSocketBinarySamplerGui extends AbstractSamplerGui {
         contentEncoding = new JTextField(10);
         JLabel contentEncodingLabel = new JLabel(JMeterUtils.getResString("content_encoding")); // $NON-NLS-1$
         contentEncodingLabel.setLabelFor(contentEncoding);
+        
+        recvWait.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JCheckBox checkBox = (JCheckBox) e.getSource();
+				timeout.setEnabled(checkBox.isSelected());
+			}
+		});
         
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel.add(pathLabel);
