@@ -32,6 +32,7 @@ public class WebSocketBinarySamplerGui extends AbstractSamplerGui {
     private JTextField port;
     private JTextField protocol;
     private JTextField subProtocol;
+    private JTextField timeout;
     private JTextField contentEncoding;
     private JTextField path;
     private JTextArea  sendMessage;
@@ -75,6 +76,7 @@ public class WebSocketBinarySamplerGui extends AbstractSamplerGui {
         protocol.setText(element.getPropertyAsString(WebSocketBinarySampler.PROTOCOL));
         subProtocol.setText(element.getPropertyAsString(WebSocketBinarySampler.SUB_PROTOCOL));
         path.setText(element.getPropertyAsString(WebSocketBinarySampler.PATH));
+        timeout.setText(element.getPropertyAsString(WebSocketBinarySampler.RECV_TIMEOUT));
         contentEncoding.setText(element.getPropertyAsString(WebSocketBinarySampler.CONTENT_ENCODING));
         serializerClass.setText(element.getPropertyAsString(WebSocketBinarySampler.SERIALIZER));
 
@@ -106,6 +108,7 @@ public class WebSocketBinarySamplerGui extends AbstractSamplerGui {
         element.setProperty(WebSocketBinarySampler.PROTOCOL, protocol.getText());
         element.setProperty(WebSocketBinarySampler.SUB_PROTOCOL, subProtocol.getText());
         element.setProperty(WebSocketBinarySampler.CONTENT_ENCODING, contentEncoding.getText());
+        element.setProperty(WebSocketBinarySampler.RECV_TIMEOUT, timeout.getText());
         element.setProperty(WebSocketBinarySampler.SERIALIZER, serializerClass.getText());
 
         Arguments args = (Arguments) argsPanel.createTestElement();
@@ -141,6 +144,7 @@ public class WebSocketBinarySamplerGui extends AbstractSamplerGui {
         return panel;
     }
     
+
     private JPanel getSerializerClassPanel() {
     	serializerClass = new JTextField(15);
 
@@ -166,15 +170,21 @@ public class WebSocketBinarySamplerGui extends AbstractSamplerGui {
         JLabel protocolLabel = new JLabel(JMeterUtils.getResString("protocol")); // $NON-NLS-1$
         protocolLabel.setLabelFor(protocol);
 
+        // WEBSOCKET SUBPROTCOL
         subProtocol = new JTextField(10);
         JLabel subProtocolLabel = new JLabel(getResString("websocket_subprotocol")); // $NON-NLS-1$
         subProtocolLabel.setLabelFor(subProtocol);
+        
+        // RECEIVE TINE OUT
+        timeout = new JTextField(4);
+        JLabel timeoutLabel = new JLabel(getResString("websocket_timeout")); // $NON-NLS-1$
+        timeoutLabel.setLabelFor(timeout);
         
         // CONTENT_ENCODING
         contentEncoding = new JTextField(10);
         JLabel contentEncodingLabel = new JLabel(JMeterUtils.getResString("content_encoding")); // $NON-NLS-1$
         contentEncodingLabel.setLabelFor(contentEncoding);
-
+        
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel.add(pathLabel);
         panel.add(path);
@@ -186,6 +196,10 @@ public class WebSocketBinarySamplerGui extends AbstractSamplerGui {
 
         panel.add(subProtocolLabel);
         panel.add(subProtocol);
+        panel.add(Box.createHorizontalStrut(5));
+
+        panel.add(timeoutLabel);
+        panel.add(timeout);
         panel.add(Box.createHorizontalStrut(5));
         
         panel.add(contentEncodingLabel);
